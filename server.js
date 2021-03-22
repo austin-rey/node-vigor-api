@@ -16,11 +16,11 @@ const prisma = new PrismaClient();
 dotenv.config({ path: './config.env' });
 
 // Routes
-// const auth = require('');
-// const fitness = require('');
-// const goals = require('');
-// const diet = require('');
-// const wellness = require('');
+const auth = require('./routes/auth');
+const fitness = require('./routes/fitness');
+const goals = require('./routes/goals');
+const diet = require('./routes/diet');
+const wellness = require('./routes/wellness');
 
 // Init App
 const app = express();
@@ -28,7 +28,7 @@ const app = express();
 // Body Parser
 app.use(express.json());
 
-// Cors - Todo
+// Cors
 app.use(cors({ credentials: true, origin: ['http://localhost:3000'] }));
 
 // Security Packages
@@ -36,11 +36,11 @@ app.use(helmet());
 app.use(xss());
 
 // Mount routers
-// app.use('/api/v1/auth', auth);
-// app.use('/api/v1/fitness', fitness);
-// app.use('/api/v1/goals', goals);
-// app.use('/api/v1/diet', diet);
-// app.use('/api/v1/wellness', wellness);
+app.use('/api/v1/auth', auth);
+app.use('/api/v1/fitness', fitness);
+app.use('/api/v1/goals', goals);
+app.use('/api/v1/diet', diet);
+app.use('/api/v1/wellness', wellness);
 
 // Controller error handler
 app.use(errorHandler);
