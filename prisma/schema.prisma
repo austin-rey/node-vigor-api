@@ -1,0 +1,110 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model diet_logs {
+  diet_log_id Int      @id @default(autoincrement())
+  user_id     Int
+  created_at  DateTime @db.Date
+  meal        Int
+  meals       meals    @relation(fields: [meal], references: [meal_id])
+  user        user     @relation(fields: [user_id], references: [user_id])
+}
+
+model fitness_logs {
+  fitness_log_id  Int           @id @default(autoincrement())
+  user_id         Int
+  created_at      DateTime      @db.Date
+  name            String?       @db.VarChar(255)
+  description     String        @db.VarChar(255)
+  date_of_workout DateTime      @db.Date
+  workout_type    Int
+  satisfaction    satisfaction?
+  workout_length  Int
+  user            user          @relation(fields: [user_id], references: [user_id])
+  workouts        workouts      @relation(fields: [workout_type], references: [workout_id])
+}
+
+model goals {
+  goal_id            Int         @id @default(autoincrement())
+  user_id            Int
+  created_at         DateTime    @db.Date
+  name               String      @db.VarChar(255)
+  description        String      @db.VarChar(255)
+  time_of_completion DateTime    @db.Date
+  type               goal_types? @default(fitness)
+  status             status?     @default(in_progress)
+  user               user        @relation(fields: [user_id], references: [user_id])
+}
+
+model meals {
+  meal_id     Int           @id @default(autoincrement())
+  user_id     Int
+  created_at  DateTime      @db.Date
+  name        String        @db.VarChar(255)
+  description String        @db.VarChar(255)
+  calories    Decimal       @db.Decimal(8, 2)
+  type        satisfaction? @default(ok)
+  user        user          @relation(fields: [user_id], references: [user_id])
+  diet_logs   diet_logs[]
+}
+
+model user {
+  user_id          Int             @id @default(autoincrement())
+  first_name       String          @db.VarChar(255)
+  last_name        String          @db.VarChar(255)
+  password         String          @db.VarChar(255)
+  created_at       DateTime        @db.Date
+  user_preferences goal_types?     @default(all)
+  weight           Int
+  height           Int
+  age              Int
+  diet_logs        diet_logs[]
+  fitness_logs     fitness_logs[]
+  goals            goals[]
+  meals            meals[]
+  wellness_logs    wellness_logs[]
+  workouts         workouts[]
+}
+
+model wellness_logs {
+  wellness_id    Int           @id @default(autoincrement())
+  user_id        Int
+  created_at     DateTime      @db.Date
+  wellness_level satisfaction? @default(ok)
+  user           user          @relation(fields: [user_id], references: [user_id])
+}
+
+model workouts {
+  workout_id   Int            @id @default(autoincrement())
+  user_id      Int?
+  created_at   DateTime       @db.Date
+  name         String         @db.VarChar(255)
+  description  String         @db.VarChar(255)
+  user         user?          @relation(fields: [user_id], references: [user_id])
+  fitness_logs fitness_logs[]
+}
+
+enum goal_types {
+  fitness
+  wellness
+  diet
+  all
+}
+
+enum satisfaction {
+  bad
+  ok
+  good
+}
+
+enum status {
+  in_progress @map("in-progress")
+  failed
+  completed
+}
