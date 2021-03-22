@@ -1,7 +1,7 @@
 const ErrorResponse = require('../utils/errorResponse');
 const asyncHandler = require('../middleware/async');
 
-exports.getFitnessLogsByUserId = asyncHandler(async (req, res, next) => {
+exports.getFitnessLogs = asyncHandler(async (req, res, next) => {
   res.status(200).json({ success: true });
 });
 

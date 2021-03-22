@@ -1,8 +1,7 @@
 const express = require('express');
-const router = express.Router();
 // Todo auth middleware
 const {
-  getFitnessLogsByUserId,
+  getFitnessLogs,
   createFitnessLog,
   updatedFitnessLogByLogId,
   deleteFitnessLogByLogId,
@@ -14,7 +13,7 @@ const {
 
 const router = express.Router();
 
-router.route('/logs/').post(createFitnessLog).get(getFitnessLogsByUserId);
+router.route('/logs/').post(createFitnessLog).get(getFitnessLogs);
 router
   .route('/logs/:fitness_log_id')
   .put(updatedFitnessLogByLogId)
@@ -25,3 +24,5 @@ router
   .route('/workouts/:workout_id')
   .put(updateFitnessWorkoutByWorkoutId)
   .delete(deleteFitnessWorkoutByWorkoutId);
+
+module.exports = router;

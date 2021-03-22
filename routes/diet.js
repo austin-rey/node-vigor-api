@@ -1,27 +1,28 @@
 const express = require('express');
-const router = express.Router();
 // Todo auth middleware
 const {
-  getDietsByUserId,
-  createDiets,
+  getDietLogs,
+  createDiet,
   updateDietByDietId,
   deleteDietByDietId,
-  getMealsByUserId,
-  createMeals,
+  getMeals,
+  createMeal,
   updateMealByMealId,
   deleteMealByMealId,
 } = require('../controllers/diet');
 
 const router = express.Router();
 
-router.route('/logs/').get(getDietsByUserId).post(createDiets);
+router.route('/logs/').get(getDietLogs).post(createDiet);
 router
   .route('/logs/:diet_log_id')
   .put(updateDietByDietId)
   .delete(deleteDietByDietId);
 
-router.route('/meals/').get(getMealsByUserId).post(createMeals);
+router.route('/meals/').get(getMeals).post(createMeal);
 router
   .route('/meals/:meal_id')
   .put(updateMealByMealId)
   .delete(deleteMealByMealId);
+
+module.exports = router;
