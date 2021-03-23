@@ -7,10 +7,16 @@ const cors = require('cors');
 const helmet = require('helmet');
 const xss = require('xss-clean');
 const errorHandler = require('./middleware/error');
+const asyncHandler = require('./middleware/async');
+const prisma = require('./utils/prismaClient');
 
-// Prisma ORM
-const { PrismaClient } = require('@prisma/client');
-const prisma = new PrismaClient();
+// Connect to DB
+const connectDB = asyncHandler(async () => {
+  console.log('Connecting to DB...'.yellow.bold);
+  await prisma.$connect();
+});
+
+connectDB();
 
 // Env. Vars
 dotenv.config({ path: './config.env' });
