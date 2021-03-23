@@ -1,12 +1,20 @@
 const ErrorResponse = require('../utils/errorResponse');
 const asyncHandler = require('../middleware/async');
+const prisma = require('../utils/prismaClient');
 
 // @desc      Register new user
 // @route     POST /api/v1/register
 // @access    Public
 // @response  Signed JWT
 exports.register = asyncHandler(async (req, res, next) => {
-  res.status(200).json({ success: true });
+  let newUser = req.body;
+  newUser.created_at = new Date();
+
+  const user = await prisma.user.create({
+    data: newUser,
+  });
+
+  res.status(200).json({ success: true, message: 'Created User' });
 });
 
 // @desc      Login existing user
