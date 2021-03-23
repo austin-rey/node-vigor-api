@@ -43,18 +43,32 @@ exports.createFitnessLog = asyncHandler(async (req, res, next) => {
 // @desc      Update Fitness Log By ID
 // @route     PUT /api/v1/fitness/logs/:fitness_log_id
 // @access    Private
-exports.updatedFitnessLogByLogId = asyncHandler(async (req, res, next) => {
-  // TODO
-  // Check to see if log exists
-  // Check that this resource was created by user making request
-  res.status(200).json({ success: true });
+exports.updateFitnessLogByLogId = asyncHandler(async (req, res, next) => {
+  const id = parseInt(req.params.fitness_log_id);
+
+  const updatedFitnessLog = await prisma.fitness_logs.update({
+    where: {
+      fitness_log_id: id,
+    },
+    data: req.body,
+  });
+
+  res.status(200).json({ success: true, data: updatedFitnessLog });
 });
 
 // @desc      Delete Fitness Log By ID
 // @route     DELETE /api/v1/fitness/logs/:fitness_log_id
 // @access    Private
 exports.deleteFitnessLogByLogId = asyncHandler(async (req, res, next) => {
-  res.status(200).json({ success: true });
+  const id = parseInt(req.params.fitness_log_id);
+
+  const deletedFitnessLog = await prisma.fitness_logs.delete({
+    where: {
+      fitness_log_id: id,
+    },
+  });
+
+  res.status(200).json({ success: true, data: {} });
 });
 
 // @desc      Get ALL Created Workouts
@@ -81,7 +95,7 @@ exports.getFitnessWorkoutsByUserId = asyncHandler(async (req, res, next) => {
 });
 
 // @desc      Create Fitness Workout
-// @route     POST /api/v1/fitness/logs/
+// @route     POST /api/v1/fitness/workouts/
 // @access    Private
 exports.createFitnessWorkout = asyncHandler(async (req, res, next) => {
   const data = req.body;
@@ -95,19 +109,36 @@ exports.createFitnessWorkout = asyncHandler(async (req, res, next) => {
 });
 
 // @desc      Update Fitness Workout By ID
-// @route     PUT /api/v1/fitness/logs/:workout_id
+// @route     PUT /api/v1/fitness/workouts/:workout_id
 // @access    Private
 exports.updateFitnessWorkoutByWorkoutId = asyncHandler(
   async (req, res, next) => {
-    res.status(200).json({ success: true });
+    const id = parseInt(req.params.workout_id);
+
+    const updatedWorkout = await prisma.workouts.update({
+      where: {
+        workout_id: id,
+      },
+      data: req.body,
+    });
+
+    res.status(200).json({ success: true, data: updatedWorkout });
   }
 );
 
 // @desc      Delete Fitness Workout By ID
-// @route     DELETE /api/v1/fitness/logs/:workout_id
+// @route     DELETE /api/v1/fitness/workouts/:workout_id
 // @access    Private
 exports.deleteFitnessWorkoutByWorkoutId = asyncHandler(
   async (req, res, next) => {
-    res.status(200).json({ success: true });
+    const id = parseInt(req.params.workout_id);
+
+    const deletedWorkout = await prisma.workouts.delete({
+      where: {
+        workout_id: id,
+      },
+    });
+
+    res.status(200).json({ success: true, data: {} });
   }
 );

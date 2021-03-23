@@ -4,7 +4,7 @@ const {
   getFitnessLogs,
   getFitnessLogsByUserId,
   createFitnessLog,
-  updatedFitnessLogByLogId,
+  updateFitnessLogByLogId,
   deleteFitnessLogByLogId,
   getFitnessWorkouts,
   getFitnessWorkoutsByUserId,
@@ -21,7 +21,7 @@ router.route('/logs/').post(createFitnessLog).get(getFitnessLogs);
 
 router
   .route('/logs/:fitness_log_id')
-  .put(updatedFitnessLogByLogId)
+  .put(updateFitnessLogByLogId)
   .delete(deleteFitnessLogByLogId);
 
 router.route('/workouts/user/:user_id').get(getFitnessWorkoutsByUserId);
