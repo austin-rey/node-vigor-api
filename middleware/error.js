@@ -1,16 +1,14 @@
 const ErrorResponse = require('../utils/errorResponse');
+const colors = require('colors');
 
 const errorHandler = (err, req, res, next) => {
-  let error = { ...err };
-
-  error.message = err.message;
-
   //Log to console
-  console.log(err);
+  console.log(`${err.message}`.red.bold);
 
-  res.status(error.statusCode || 500).json({
+  res.status(err.statusCode || 500).json({
     success: false,
-    error: error.message || 'Server Error.',
+    code: err.code,
+    message: 'Server Error',
   });
 };
 
