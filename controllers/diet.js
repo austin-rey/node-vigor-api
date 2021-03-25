@@ -14,7 +14,7 @@ exports.getDietLogs = asyncHandler(async (req, res, next) => {
 // @route     GET /api/v1/diet/logs/user/:user_id
 // @access    Private
 exports.getDietLogsByUserId = asyncHandler(async (req, res, next) => {
-  const id = parseInt(req.params.user_id);
+  const id = req.params.user_id;
 
   const dietLogs = await prisma.diet_logs.findMany({
     where: {
@@ -30,7 +30,7 @@ exports.getDietLogsByUserId = asyncHandler(async (req, res, next) => {
 // @access    Private
 exports.createDiet = asyncHandler(async (req, res, next) => {
   let data = req.body;
-  data.created_at = new Date();
+  data.user_id = req.user.id;
 
   const newDietLog = await prisma.diet_logs.create({
     data: data,
@@ -43,11 +43,11 @@ exports.createDiet = asyncHandler(async (req, res, next) => {
 // @route     PUT /api/v1/diet/:diet_log_id
 // @access    Private
 exports.updateDietByDietId = asyncHandler(async (req, res, next) => {
-  const id = parseInt(req.params.diet_log_id);
+  const id = req.params.diet_log_id;
 
   const updatedDietLog = await prisma.diet_logs.update({
     where: {
-      diet_log_id: id,
+      id: id,
     },
     data: req.body,
   });
@@ -59,11 +59,11 @@ exports.updateDietByDietId = asyncHandler(async (req, res, next) => {
 // @route     DELETE /api/v1/diet/:diet_log_id
 // @access    Private
 exports.deleteDietByDietId = asyncHandler(async (req, res, next) => {
-  const id = parseInt(req.params.diet_log_id);
+  const id = req.params.diet_log_id;
 
   const deletedDietLog = await prisma.diet_logs.delete({
     where: {
-      diet_log_id: id,
+      id: id,
     },
   });
 
@@ -82,7 +82,7 @@ exports.getMeals = asyncHandler(async (req, res, next) => {
 // @route     GET /api/v1/diet/meals/user/:user_id
 // @access    Private
 exports.getMealsByUserId = asyncHandler(async (req, res, next) => {
-  const id = parseInt(req.params.user_id);
+  const id = req.params.user_id;
 
   const meals = await prisma.meals.findMany({
     where: {
@@ -98,7 +98,7 @@ exports.getMealsByUserId = asyncHandler(async (req, res, next) => {
 // @access    Private
 exports.createMeal = asyncHandler(async (req, res, next) => {
   let data = req.body;
-  data.created_at = new Date();
+  data.user_id = req.user.id;
 
   const newMeal = await prisma.meals.create({
     data: data,
@@ -111,11 +111,11 @@ exports.createMeal = asyncHandler(async (req, res, next) => {
 // @route     PUT /api/v1/diet/meals/:meal_id
 // @access    Private
 exports.updateMealByMealId = asyncHandler(async (req, res, next) => {
-  const id = parseInt(req.params.meal_id);
+  const id = req.params.meal_id;
 
   const updatedMeal = await prisma.meals.update({
     where: {
-      meal_id: id,
+      id: id,
     },
     data: req.body,
   });
@@ -127,11 +127,11 @@ exports.updateMealByMealId = asyncHandler(async (req, res, next) => {
 // @route     DELETE /api/v1/diet/meals/:meal_id
 // @access    Private
 exports.deleteMealByMealId = asyncHandler(async (req, res, next) => {
-  const id = parseInt(req.params.meal_id);
+  const id = req.params.meal_id;
 
   const deletedMeal = await prisma.meals.delete({
     where: {
-      meal_id: id,
+      id: id,
     },
   });
 

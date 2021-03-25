@@ -14,7 +14,7 @@ exports.getWellnessLogs = asyncHandler(async (req, res, next) => {
 // @route     GET /api/v1/wellness/user/:user_id
 // @access    Private
 exports.getWellnessLogsByUserId = asyncHandler(async (req, res, next) => {
-  const id = parseInt(req.params.user_id);
+  const id = req.params.user_id;
 
   const wellnessLogs = await prisma.wellness_logs.findMany({
     where: {
@@ -30,7 +30,7 @@ exports.getWellnessLogsByUserId = asyncHandler(async (req, res, next) => {
 // @access    Private
 exports.createWellnessLog = asyncHandler(async (req, res, next) => {
   let data = req.body;
-  data.created_at = new Date();
+  data.user_id = req.user.id;
 
   const newWellnessLog = await prisma.wellness_logs.create({
     data: data,
@@ -43,11 +43,11 @@ exports.createWellnessLog = asyncHandler(async (req, res, next) => {
 // @route     PUT /api/v1/wellness/:wellness_id
 // @access    Private
 exports.updateWellnessLogByLogId = asyncHandler(async (req, res, next) => {
-  const id = parseInt(req.params.wellness_id);
+  const id = req.params.wellness_id;
 
   const updatedWellnessLog = await prisma.wellness_logs.update({
     where: {
-      wellness_id: id,
+      id: id,
     },
     data: req.body,
   });
@@ -59,11 +59,11 @@ exports.updateWellnessLogByLogId = asyncHandler(async (req, res, next) => {
 // @route     DELETE /api/v1/wellness/:wellness_id
 // @access    Private
 exports.deleteWellnessLogByLogId = asyncHandler(async (req, res, next) => {
-  const id = parseInt(req.params.wellness_id);
+  const id = req.params.wellness_id;
 
   const deletedWellnessLog = await prisma.wellness_logs.delete({
     where: {
-      wellness_id: id,
+      id: id,
     },
   });
 

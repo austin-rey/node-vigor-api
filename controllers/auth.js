@@ -77,7 +77,7 @@ const getSignedJwtToken = (userId) => {
 
 const sendTokenResponse = (user, statusCode, res) => {
   // Create token
-  const token = getSignedJwtToken(user.user_id);
+  const token = getSignedJwtToken(user.id);
 
   // Create cookie
   const options = {

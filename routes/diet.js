@@ -1,5 +1,6 @@
 const express = require('express');
-// Todo auth middleware
+const { protect, authorize } = require('../middleware/auth');
+
 const {
   getDietLogs,
   getDietLogsByUserId,
@@ -15,22 +16,22 @@ const {
 
 const router = express.Router();
 
-router.route('/logs/user/:user_id').get(getDietLogsByUserId);
+router.route('/logs/user/:user_id').get(protect, getDietLogsByUserId);
 
-router.route('/logs/').get(getDietLogs).post(createDiet);
+router.route('/logs/').get(protect, getDietLogs).post(protect, createDiet);
 
 router
   .route('/logs/:diet_log_id')
-  .put(updateDietByDietId)
-  .delete(deleteDietByDietId);
+  .put(protect, updateDietByDietId)
+  .delete(protect, deleteDietByDietId);
 
-router.route('/meals/user/:user_id').get(getMealsByUserId);
+router.route('/meals/user/:user_id').get(protect, getMealsByUserId);
 
-router.route('/meals/').get(getMeals).post(createMeal);
+router.route('/meals/').get(getMeals).post(protect, createMeal);
 
 router
   .route('/meals/:meal_id')
-  .put(updateMealByMealId)
-  .delete(deleteMealByMealId);
+  .put(protect, updateMealByMealId)
+  .delete(protect, deleteMealByMealId);
 
 module.exports = router;

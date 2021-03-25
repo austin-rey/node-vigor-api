@@ -14,7 +14,7 @@ exports.getGoals = asyncHandler(async (req, res, next) => {
 // @route     GET /api/v1/goals/user/:user_id
 // @access    Private
 exports.getGoalsByUserId = asyncHandler(async (req, res, next) => {
-  const id = parseInt(req.params.user_id);
+  const id = req.params.user_id;
 
   const goals = await prisma.goals.findMany({
     where: {
@@ -30,8 +30,8 @@ exports.getGoalsByUserId = asyncHandler(async (req, res, next) => {
 // @access    Private
 exports.createGoal = asyncHandler(async (req, res, next) => {
   let data = req.body;
-  data.created_at = new Date();
   data.time_of_completion = new Date();
+  data.user_id = req.user.id;
 
   const newGoal = await prisma.goals.create({
     data: data,
@@ -44,11 +44,11 @@ exports.createGoal = asyncHandler(async (req, res, next) => {
 // @route     PUT /api/v1/goals/:goal_id
 // @access    Private
 exports.updateGoalByGoalId = asyncHandler(async (req, res, next) => {
-  const id = parseInt(req.params.goal_id);
+  const id = req.params.goal_id;
 
   const updatedGoal = await prisma.goals.update({
     where: {
-      goal_id: id,
+      id: id,
     },
     data: req.body,
   });
@@ -60,11 +60,11 @@ exports.updateGoalByGoalId = asyncHandler(async (req, res, next) => {
 // @route     DELETE /api/v1/goals/:goal_id
 // @access    Private
 exports.deleteGoalByGoalId = asyncHandler(async (req, res, next) => {
-  const id = parseInt(req.params.goal_id);
+  const id = req.params.goal_id;
 
   const deletedGoal = await prisma.goals.delete({
     where: {
-      goal_id: id,
+      id: id,
     },
   });
 

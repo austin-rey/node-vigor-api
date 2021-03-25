@@ -30,8 +30,8 @@ exports.getFitnessLogsByUserId = asyncHandler(async (req, res, next) => {
 // @access    Private
 exports.createFitnessLog = asyncHandler(async (req, res, next) => {
   let data = req.body;
-  data.created_at = new Date();
   data.date_of_workout = new Date();
+  data.user_id = req.user.id;
 
   const newFitnessLog = await prisma.fitness_logs.create({
     data: data,
@@ -44,11 +44,12 @@ exports.createFitnessLog = asyncHandler(async (req, res, next) => {
 // @route     PUT /api/v1/fitness/logs/:fitness_log_id
 // @access    Private
 exports.updateFitnessLogByLogId = asyncHandler(async (req, res, next) => {
-  const id = parseInt(req.params.fitness_log_id);
+  const id = req.params.fitness_log_id;
 
+  // Validate that user owns this
   const updatedFitnessLog = await prisma.fitness_logs.update({
     where: {
-      fitness_log_id: id,
+      id: id,
     },
     data: req.body,
   });
@@ -60,11 +61,11 @@ exports.updateFitnessLogByLogId = asyncHandler(async (req, res, next) => {
 // @route     DELETE /api/v1/fitness/logs/:fitness_log_id
 // @access    Private
 exports.deleteFitnessLogByLogId = asyncHandler(async (req, res, next) => {
-  const id = parseInt(req.params.fitness_log_id);
+  const id = req.params.fitness_log_id;
 
   const deletedFitnessLog = await prisma.fitness_logs.delete({
     where: {
-      fitness_log_id: id,
+      id: id,
     },
   });
 
@@ -83,7 +84,7 @@ exports.getFitnessWorkouts = asyncHandler(async (req, res, next) => {
 // @route     GET /api/v1/fitness/workouts/user/:user_id
 // @access    Private
 exports.getFitnessWorkoutsByUserId = asyncHandler(async (req, res, next) => {
-  const id = parseInt(req.params.user_id);
+  const id = req.params.user_id;
 
   const workouts = await prisma.workouts.findMany({
     where: {
@@ -99,8 +100,7 @@ exports.getFitnessWorkoutsByUserId = asyncHandler(async (req, res, next) => {
 // @access    Private
 exports.createFitnessWorkout = asyncHandler(async (req, res, next) => {
   const data = req.body;
-  data.created_at = new Date();
-
+  data.user_id = req.user.id;
   const newWorkout = await prisma.workouts.create({
     data: data,
   });
@@ -113,11 +113,11 @@ exports.createFitnessWorkout = asyncHandler(async (req, res, next) => {
 // @access    Private
 exports.updateFitnessWorkoutByWorkoutId = asyncHandler(
   async (req, res, next) => {
-    const id = parseInt(req.params.workout_id);
+    const id = req.params.workout_id;
 
     const updatedWorkout = await prisma.workouts.update({
       where: {
-        workout_id: id,
+        id: id,
       },
       data: req.body,
     });
@@ -131,11 +131,11 @@ exports.updateFitnessWorkoutByWorkoutId = asyncHandler(
 // @access    Private
 exports.deleteFitnessWorkoutByWorkoutId = asyncHandler(
   async (req, res, next) => {
-    const id = parseInt(req.params.workout_id);
+    const id = req.params.workout_id;
 
     const deletedWorkout = await prisma.workouts.delete({
       where: {
-        workout_id: id,
+        id: id,
       },
     });
 
