@@ -6,7 +6,18 @@ const prisma = require('../utils/prismaClient');
 // @route     GET /api/v1/wellness/
 // @access    Private
 exports.getWellnessLogs = asyncHandler(async (req, res, next) => {
-  const wellnessLogs = await prisma.wellness_logs.findMany();
+  const wellnessLogs = await prisma.wellness_logs.findMany({
+    include: {
+      user: {
+        select: {
+          id: true,
+          first_name: true,
+          last_name: true,
+          email: true,
+        },
+      },
+    },
+  });
   res.status(200).json({ success: true, data: wellnessLogs });
 });
 
@@ -19,6 +30,16 @@ exports.getWellnessLogsByUserId = asyncHandler(async (req, res, next) => {
   const wellnessLogs = await prisma.wellness_logs.findMany({
     where: {
       user_id: id,
+    },
+    include: {
+      user: {
+        select: {
+          id: true,
+          first_name: true,
+          last_name: true,
+          email: true,
+        },
+      },
     },
   });
 
@@ -34,9 +55,19 @@ exports.createWellnessLog = asyncHandler(async (req, res, next) => {
 
   const newWellnessLog = await prisma.wellness_logs.create({
     data: data,
+    include: {
+      user: {
+        select: {
+          id: true,
+          first_name: true,
+          last_name: true,
+          email: true,
+        },
+      },
+    },
   });
 
-  res.status(200).json({ success: true, data: newWellnessLog });
+  res.status(201).json({ success: true, data: newWellnessLog });
 });
 
 // @desc      Update Diet Log By ID
@@ -48,6 +79,16 @@ exports.updateWellnessLogByLogId = asyncHandler(async (req, res, next) => {
   const updatedWellnessLog = await prisma.wellness_logs.update({
     where: {
       id: id,
+    },
+    include: {
+      user: {
+        select: {
+          id: true,
+          first_name: true,
+          last_name: true,
+          email: true,
+        },
+      },
     },
     data: req.body,
   });

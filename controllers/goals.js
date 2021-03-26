@@ -6,7 +6,18 @@ const prisma = require('../utils/prismaClient');
 // @route     GET /api/v1/goals/
 // @access    Private
 exports.getGoals = asyncHandler(async (req, res, next) => {
-  const goals = await prisma.goals.findMany();
+  const goals = await prisma.goals.findMany({
+    include: {
+      user: {
+        select: {
+          id: true,
+          first_name: true,
+          last_name: true,
+          email: true,
+        },
+      },
+    },
+  });
   res.status(200).json({ success: true, data: goals });
 });
 
@@ -19,6 +30,16 @@ exports.getGoalsByUserId = asyncHandler(async (req, res, next) => {
   const goals = await prisma.goals.findMany({
     where: {
       user_id: id,
+    },
+    include: {
+      user: {
+        select: {
+          id: true,
+          first_name: true,
+          last_name: true,
+          email: true,
+        },
+      },
     },
   });
 
@@ -35,9 +56,19 @@ exports.createGoal = asyncHandler(async (req, res, next) => {
 
   const newGoal = await prisma.goals.create({
     data: data,
+    include: {
+      user: {
+        select: {
+          id: true,
+          first_name: true,
+          last_name: true,
+          email: true,
+        },
+      },
+    },
   });
 
-  res.status(200).json({ success: true, data: newGoal });
+  res.status(201).json({ success: true, data: newGoal });
 });
 
 // @desc      Update Goal By ID
@@ -49,6 +80,16 @@ exports.updateGoalByGoalId = asyncHandler(async (req, res, next) => {
   const updatedGoal = await prisma.goals.update({
     where: {
       id: id,
+    },
+    include: {
+      user: {
+        select: {
+          id: true,
+          first_name: true,
+          last_name: true,
+          email: true,
+        },
+      },
     },
     data: req.body,
   });

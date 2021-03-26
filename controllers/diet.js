@@ -6,7 +6,27 @@ const prisma = require('../utils/prismaClient');
 // @route     GET /api/v1/diet/logs/
 // @access    Private
 exports.getDietLogs = asyncHandler(async (req, res, next) => {
-  const dietLogs = await prisma.diet_logs.findMany();
+  const dietLogs = await prisma.diet_logs.findMany({
+    include: {
+      user: {
+        select: {
+          id: true,
+          first_name: true,
+          last_name: true,
+          email: true,
+        },
+      },
+      meals: {
+        select: {
+          id: true,
+          name: true,
+          description: true,
+          calories: true,
+          type: true,
+        },
+      },
+    },
+  });
   res.status(200).json({ success: true, data: dietLogs });
 });
 
@@ -19,6 +39,25 @@ exports.getDietLogsByUserId = asyncHandler(async (req, res, next) => {
   const dietLogs = await prisma.diet_logs.findMany({
     where: {
       user_id: id,
+    },
+    include: {
+      user: {
+        select: {
+          id: true,
+          first_name: true,
+          last_name: true,
+          email: true,
+        },
+      },
+      meals: {
+        select: {
+          id: true,
+          name: true,
+          description: true,
+          calories: true,
+          type: true,
+        },
+      },
     },
   });
 
@@ -34,6 +73,25 @@ exports.createDiet = asyncHandler(async (req, res, next) => {
 
   const newDietLog = await prisma.diet_logs.create({
     data: data,
+    include: {
+      user: {
+        select: {
+          id: true,
+          first_name: true,
+          last_name: true,
+          email: true,
+        },
+      },
+      meals: {
+        select: {
+          id: true,
+          name: true,
+          description: true,
+          calories: true,
+          type: true,
+        },
+      },
+    },
   });
 
   res.status(200).json({ success: true, data: newDietLog });
@@ -48,6 +106,25 @@ exports.updateDietByDietId = asyncHandler(async (req, res, next) => {
   const updatedDietLog = await prisma.diet_logs.update({
     where: {
       id: id,
+    },
+    include: {
+      user: {
+        select: {
+          id: true,
+          first_name: true,
+          last_name: true,
+          email: true,
+        },
+      },
+      meals: {
+        select: {
+          id: true,
+          name: true,
+          description: true,
+          calories: true,
+          type: true,
+        },
+      },
     },
     data: req.body,
   });
@@ -74,7 +151,18 @@ exports.deleteDietByDietId = asyncHandler(async (req, res, next) => {
 // @route     GET /api/v1/diet/meals/
 // @access    Private
 exports.getMeals = asyncHandler(async (req, res, next) => {
-  const meals = await prisma.meals.findMany();
+  const meals = await prisma.meals.findMany({
+    include: {
+      user: {
+        select: {
+          id: true,
+          first_name: true,
+          last_name: true,
+          email: true,
+        },
+      },
+    },
+  });
   res.status(200).json({ success: true, data: meals });
 });
 
@@ -87,6 +175,16 @@ exports.getMealsByUserId = asyncHandler(async (req, res, next) => {
   const meals = await prisma.meals.findMany({
     where: {
       user_id: id,
+    },
+    include: {
+      user: {
+        select: {
+          id: true,
+          first_name: true,
+          last_name: true,
+          email: true,
+        },
+      },
     },
   });
 
@@ -102,9 +200,19 @@ exports.createMeal = asyncHandler(async (req, res, next) => {
 
   const newMeal = await prisma.meals.create({
     data: data,
+    include: {
+      user: {
+        select: {
+          id: true,
+          first_name: true,
+          last_name: true,
+          email: true,
+        },
+      },
+    },
   });
 
-  res.status(200).json({ success: true, data: newMeal });
+  res.status(201).json({ success: true, data: newMeal });
 });
 
 // @desc      Update Meal By Id
@@ -116,6 +224,16 @@ exports.updateMealByMealId = asyncHandler(async (req, res, next) => {
   const updatedMeal = await prisma.meals.update({
     where: {
       id: id,
+    },
+    include: {
+      user: {
+        select: {
+          id: true,
+          first_name: true,
+          last_name: true,
+          email: true,
+        },
+      },
     },
     data: req.body,
   });

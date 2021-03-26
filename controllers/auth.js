@@ -41,7 +41,7 @@ exports.register = asyncHandler(async (req, res, next) => {
     data: newUser,
   });
 
-  sendTokenResponse(user, 200, res);
+  sendTokenResponse(user, 201, res);
 });
 
 // @desc      Login existing user

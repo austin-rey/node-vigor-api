@@ -6,7 +6,25 @@ const prisma = require('../utils/prismaClient');
 // @route     GET /api/v1/fitness/logs/
 // @access    Private
 exports.getFitnessLogs = asyncHandler(async (req, res, next) => {
-  const fitnessLogs = await prisma.fitness_logs.findMany();
+  const fitnessLogs = await prisma.fitness_logs.findMany({
+    include: {
+      user: {
+        select: {
+          id: true,
+          first_name: true,
+          last_name: true,
+          email: true,
+        },
+      },
+      workouts: {
+        select: {
+          id: true,
+          name: true,
+          description: true,
+        },
+      },
+    },
+  });
   res.status(200).json({ success: true, data: fitnessLogs });
 });
 
@@ -19,6 +37,16 @@ exports.getFitnessLogsByUserId = asyncHandler(async (req, res, next) => {
   const fitnessLogs = await prisma.fitness_logs.findMany({
     where: {
       user_id: id,
+    },
+    include: {
+      user: {
+        select: {
+          id: true,
+          first_name: true,
+          last_name: true,
+          email: true,
+        },
+      },
     },
   });
 
@@ -35,9 +63,19 @@ exports.createFitnessLog = asyncHandler(async (req, res, next) => {
 
   const newFitnessLog = await prisma.fitness_logs.create({
     data: data,
+    include: {
+      user: {
+        select: {
+          id: true,
+          first_name: true,
+          last_name: true,
+          email: true,
+        },
+      },
+    },
   });
 
-  res.status(200).json({ success: true, data: newFitnessLog });
+  res.status(201).json({ success: true, data: newFitnessLog });
 });
 
 // @desc      Update Fitness Log By ID
@@ -50,6 +88,16 @@ exports.updateFitnessLogByLogId = asyncHandler(async (req, res, next) => {
   const updatedFitnessLog = await prisma.fitness_logs.update({
     where: {
       id: id,
+    },
+    include: {
+      user: {
+        select: {
+          id: true,
+          first_name: true,
+          last_name: true,
+          email: true,
+        },
+      },
     },
     data: req.body,
   });
@@ -76,7 +124,18 @@ exports.deleteFitnessLogByLogId = asyncHandler(async (req, res, next) => {
 // @route     GET /api/v1/fitness/workouts/
 // @access    Private
 exports.getFitnessWorkouts = asyncHandler(async (req, res, next) => {
-  const workouts = await prisma.workouts.findMany();
+  const workouts = await prisma.workouts.findMany({
+    include: {
+      user: {
+        select: {
+          id: true,
+          first_name: true,
+          last_name: true,
+          email: true,
+        },
+      },
+    },
+  });
   res.status(200).json({ success: true, data: workouts });
 });
 
@@ -89,6 +148,16 @@ exports.getFitnessWorkoutsByUserId = asyncHandler(async (req, res, next) => {
   const workouts = await prisma.workouts.findMany({
     where: {
       user_id: id,
+    },
+    include: {
+      user: {
+        select: {
+          id: true,
+          first_name: true,
+          last_name: true,
+          email: true,
+        },
+      },
     },
   });
 
@@ -103,9 +172,19 @@ exports.createFitnessWorkout = asyncHandler(async (req, res, next) => {
   data.user_id = req.user.id;
   const newWorkout = await prisma.workouts.create({
     data: data,
+    include: {
+      user: {
+        select: {
+          id: true,
+          first_name: true,
+          last_name: true,
+          email: true,
+        },
+      },
+    },
   });
 
-  res.status(200).json({ success: true, data: newWorkout });
+  res.status(201).json({ success: true, data: newWorkout });
 });
 
 // @desc      Update Fitness Workout By ID
@@ -118,6 +197,16 @@ exports.updateFitnessWorkoutByWorkoutId = asyncHandler(
     const updatedWorkout = await prisma.workouts.update({
       where: {
         id: id,
+      },
+      include: {
+        user: {
+          select: {
+            id: true,
+            first_name: true,
+            last_name: true,
+            email: true,
+          },
+        },
       },
       data: req.body,
     });
