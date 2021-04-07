@@ -27,7 +27,7 @@ router
 
 router.route('/meals/user/:user_id').get(protect, getMealsByUserId);
 
-router.route('/meals/').get(getMeals).post(protect, createMeal);
+router.route('/meals/').get(protect, getMeals).post(protect, createMeal);
 
 router
   .route('/meals/:meal_id')

@@ -10,10 +10,10 @@ const {
 const router = express.Router();
 
 router.route('/user/:user_id').get(protect, getGoalsByUserId);
-router.route('/').get(getGoals).post(protect, createGoal);
+router.route('/').get(protect, getGoals).post(protect, createGoal);
 router
   .route('/:goal_id')
-  .put(updateGoalByGoalId)
+  .put(protect, updateGoalByGoalId)
   .delete(protect, deleteGoalByGoalId);
 
 module.exports = router;

@@ -2,6 +2,7 @@ const express = require('express');
 const { protect, authorize } = require('../middleware/auth');
 
 const {
+  getFitnessReport,
   getFitnessLogs,
   getFitnessLogsByUserId,
   createFitnessLog,
@@ -15,6 +16,8 @@ const {
 } = require('../controllers/fitness');
 
 const router = express.Router();
+
+router.route('/report/').get(protect, getFitnessReport);
 
 router.route('/logs/user/:user_id').get(protect, getFitnessLogsByUserId);
 
