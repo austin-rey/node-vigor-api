@@ -3,6 +3,7 @@ const { protect, authorize } = require('../middleware/auth');
 
 const {
   getDietLogs,
+  getDietReport,
   getDietLogsByUserId,
   createDiet,
   updateDietByDietId,
@@ -15,6 +16,8 @@ const {
 } = require('../controllers/diet');
 
 const router = express.Router();
+
+router.route('/report/').get(protect, getDietReport);
 
 router.route('/logs/user/:user_id').get(protect, getDietLogsByUserId);
 

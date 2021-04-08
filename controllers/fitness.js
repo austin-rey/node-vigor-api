@@ -2,6 +2,55 @@ const ErrorResponse = require('../utils/errorResponse');
 const asyncHandler = require('../middleware/async');
 const prisma = require('../utils/prismaClient');
 
+// @desc      Get Top Workouts From Logs w/ Aggregated Data Based on User
+// @route     GET /api/v1/fitness/report/
+// @access    Private
+exports.getFitnessReport = asyncHandler(async (req, res, next) => {
+  const id = req.params.user_id;
+
+  const fitnessLogs = await prisma.fitness_logs.groupBy({
+    by: ['workout_type'],
+    where: {
+      user_id: id,
+    },
+    sum: {
+      workout_length: true,
+    },
+    count: {
+      workout_type: true,
+    },
+  });
+
+  const workoutIds = fitnessLogs.map((log) => {
+    return log.workout_type;
+  });
+
+  const workouts = await prisma.workouts.findMany({
+    where: {
+      id: {
+        in: workoutIds,
+      },
+    },
+  });
+
+  const fitnessReport = workouts.map((workout) => {
+    return {
+      id: workout.id,
+      user_id: workout.user_id,
+      created_at: workout.created_at,
+      name: workout.name,
+      description: workout.description,
+      sum_of_time: fitnessLogs.find((log) => log.workout_type === workout.id)
+        .sum.workout_length,
+      completion_count: fitnessLogs.find(
+        (log) => log.workout_type === workout.id
+      ).count.workout_type,
+    };
+  });
+
+  res.status(200).json({ success: true, data: fitnessReport });
+});
+
 // @desc      Get ALL Fitness Logs
 // @route     GET /api/v1/fitness/logs/
 // @access    Private
@@ -70,6 +119,13 @@ exports.createFitnessLog = asyncHandler(async (req, res, next) => {
           first_name: true,
           last_name: true,
           email: true,
+        },
+      },
+      workouts: {
+        select: {
+          id: true,
+          name: true,
+          description: true,
         },
       },
     },
@@ -168,6 +224,7 @@ exports.getFitnessWorkoutsByUserId = asyncHandler(async (req, res, next) => {
 // @route     POST /api/v1/fitness/workouts/
 // @access    Private
 exports.createFitnessWorkout = asyncHandler(async (req, res, next) => {
+  console.log(req.body);
   const data = req.body;
   data.user_id = req.user.id;
   const newWorkout = await prisma.workouts.create({
