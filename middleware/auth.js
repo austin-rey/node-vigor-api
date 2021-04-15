@@ -6,15 +6,14 @@ const prisma = require('../utils/prismaClient');
 // Validate that user exists in DB and add user information to req object
 exports.protect = asyncHandler(async (req, res, next) => {
   let token;
-
   // Parse token from bearer or cookie
   if (
     req.headers.authorization &&
     req.headers.authorization.startsWith('Bearer')
   ) {
     token = req.headers.authorization.split(' ')[1];
-  } else if (req.cookies.token) {
-    token = req.cookies.token;
+  } else if (req.headers.cookie) {
+    token = req.headers.cookie.split('=')[1];
   }
 
   // Make sure token exists
@@ -45,5 +44,6 @@ exports.protect = asyncHandler(async (req, res, next) => {
 
 // Validate user making an update/delete owns the resource
 exports.authorize = asyncHandler(async (req, res, next) => {
+  // Return 403 Response "Forbidden Request"
   next();
 });

@@ -4,8 +4,80 @@ const prisma = require('../utils/prismaClient');
 const bcrypt = require('bcrypt');
 var jwt = require('jsonwebtoken');
 
+// @desc      Get all logs from a user by month of year
+// @route     GET /api/v1/user/calendar
+// @access    Public
+exports.calendar = asyncHandler(async (req, res, next) => {
+  const month = req.params.month;
+  const year = req.params.year;
+  const daysInMonth = new Date(year, month, 0).getDate();
+
+  console.log(new Date(`${year}-${month}-01T00:00:00+0000`));
+  console.log(new Date(`${year}-${month}-${daysInMonth}T00:00:00+0000`));
+  const logs = await prisma.user.findMany({
+    where: {
+      id: req.user.id,
+    },
+    select: {
+      first_name: true,
+      last_name: true,
+      diet_logs: {
+        select: {
+          id: true,
+          created_at: true,
+          meals: {
+            select: {
+              id: true,
+              name: true,
+              description: true,
+              calories: true,
+              type: true,
+            },
+          },
+        },
+        where: {
+          created_at: {
+            gte: new Date(`${year}-${month}-01T00:00:00+0000`),
+            lte: new Date(`${year}-${month}-${daysInMonth}T00:00:00+0000`),
+          },
+        },
+      },
+      fitness_logs: {
+        select: {
+          id: true,
+          created_at: true,
+          name: true,
+          description: true,
+          satisfaction: true,
+        },
+        where: {
+          created_at: {
+            gte: new Date(`${year}-${month}-01T00:00:00+0000`),
+            lte: new Date(`${year}-${month}-${daysInMonth}T00:00:00+0000`),
+          },
+        },
+      },
+      wellness_logs: {
+        select: {
+          id: true,
+          created_at: true,
+          wellness_level: true,
+        },
+        where: {
+          created_at: {
+            gte: new Date(`${year}-${month}-01T00:00:00+0000`),
+            lte: new Date(`${year}-${month}-${daysInMonth}T00:00:00+0000`),
+          },
+        },
+      },
+    },
+  });
+
+  res.status(200).json({ success: true, data: logs });
+});
+
 // @desc      Register new user
-// @route     POST /api/v1/register
+// @route     POST /api/v1/user/register
 // @access    Public
 // @response  Signed JWT
 exports.register = asyncHandler(async (req, res, next) => {
@@ -45,7 +117,7 @@ exports.register = asyncHandler(async (req, res, next) => {
 });
 
 // @desc      Login existing user
-// @route     GET /api/v1/login
+// @route     GET /api/v1/user/login
 // @access    Public
 // @response  Signed JWT
 exports.login = asyncHandler(async (req, res, next) => {
@@ -84,7 +156,7 @@ const sendTokenResponse = (user, statusCode, res) => {
     expires: new Date(
       Date.now() + process.env.JWT_COOKIE_EXPIRE * 25 * 60 * 60 * 1000
     ),
-    httpOnly: true,
+    httpOnly: false,
   };
 
   if (process.env.NODE_ENV === 'production') {
